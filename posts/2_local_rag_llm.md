@@ -1,6 +1,6 @@
 # yet another local GPT with RAG
 
-[![yet another local GPT with RAG](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2ElivLWajzA)](https://www.youtube.com/watch?v=2ElivLWajzA)
+<!-- [![yet another local GPT with RAG](https://markdown-videos-api.jorgenkh.no/url?url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D2ElivLWajzA)](https://www.youtube.com/watch?v=2ElivLWajzA) -->
 
 ## why i am building my own chatbot instead of using chatGPT? 
 
