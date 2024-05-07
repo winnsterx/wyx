@@ -15,13 +15,13 @@ hiya, i'm winnie. im a computer and software enthusiast based in san francisco.
 **i am also always thinking about:** 
 
 - the omnipresence of consumerism and how i can live more simply 
-- mimicry of persistent memory in AI  
+- biomimetics (esp on memory persistence and retrieval)
 
 **where else to find me:**
 
 - [farcaster](https://warpcast.com/wx)
 - [twitter](https://twitter.com/winnsterx) 
-- [email](winnsterx@proton.me)
+- email: winnster x at proton dot me
 
 
 
