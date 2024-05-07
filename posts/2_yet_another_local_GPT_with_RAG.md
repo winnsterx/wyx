@@ -1,10 +1,13 @@
 # yet another local GPT with RAG
 
-<video src="https://youtu.be/2ElivLWajzA?feature=shared" />
+i tried my hands at building a simple chatbot with RAG powered by local LLMs. this was built using Ollama, LlamaIndex, and streamlit. see demo (increase resolution to see details):
 
-## why i am building my own chatbot instead of using chatGPT? 
+<iframe width="100%" height="500px" src="https://www.youtube.com/embed/oXM18arZTvE?si=k4XgfeAlG7f6SaBW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-like many others on the internet, i tried my hands at building a simple chatbot with RAG powered by local LLMs. couple things irk me about ChatGPT:
+
+## why i am building my own chatbot? 
+
+ChatGPT has state-of-the-art capabilities, but a couple things about it irk me:
 
 1. lack of privacy. my prompts and additional contextual data are [stored by OpenAI](https://openai.com/policies/privacy-policy), dont like that, especially bc i want to ask personal, sensitive info (ex, health info)
 2. arbitrary and lazy censorship. 
@@ -13,7 +16,7 @@ like many others on the internet, i tried my hands at building a simple chatbot 
 
 i implemented a basic chatbot that fulfills the inverses of all the above. with a local LLM, all the data is now stored on my computer and I can swap in uncensored models (i.e. nous-hermes-llama2). i also integrated various surfaces (like Notion, URLs, txts) using LlamaIndex's [readers](https://llamahub.ai/) and integrations. 
 
-if i allow my imagination to extend further, the dream applicatiomn would have these additional features:
+and....if i allow my imagination to extend further, the dream application would have these additional features:
 
 - infinite and persistent memory. [lots](https://twitter.com/sjwhitmore/status/1776718019437490386) of [teams](https://www.rewind.ai) are [thinking](https://openai.com/index/memory-and-new-controls-for-chatgpt) [about](https://www.wired.com/story/chatgpt-memory-openai/) this [problem](https://python.langchain.com/docs/modules/memory/).
 - precise retrieval of relevant information from knowledge base
@@ -25,14 +28,16 @@ if i allow my imagination to extend further, the dream applicatiomn would have t
 
 ## first...can i run a local LLM on MacBook? 
 
+these are the specs for my beefy macbook pro:
+
 | Chipset Model    | Number of GPU | Number of CPU | RAM  | SSD   | Memory bandwidth |
 | ---------------- | ------------- | ------------- | ---- | ----- | ---------------- |
 | Apple M3 Pro GPU | 18-core       | 12-core       | 36GB | 500GB | 150GB/s          |
 
-i was uncertain about whether my macbook can handle running LLMs locally: *aren't these models very computationally and data-intensive to run? how hard and slow will running my own llm be?* and damn, with llama.cpp, the results are insanely fast. 
+i was uncertain about whether my macbook can handle running LLM locally, with an acceptable speed: *aren't these models very computationally and data-intensive to run? how hard and slow will running my own llm be?* and damn, with llama.cpp, the results are insanely fast. 
 
-- i can run llama3 (8-billion parameter model) at ~60 tokens/second, which is a [~200 character-request](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)/second. 
-- i can run mixtral (47B parameter model) at ~ **? tokens/s.** 
+- i can run llama3 (8B parameter model) at ~125 tokens/second, which is a [~500 character-request](https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them)/second. 
+- i can run mixtral (47B parameter model) at ~ 4 tokens/s.
 
 tldr; llama.cpp makes local LLM possible on Mac and a variety of devices using integer quantization. quantization decrease the precision in model weights to drastically decrease the memory requirements of the LLM. specifically, llama.cpp uses the [ggml](https://ggml.ai/) library to quant model down from 16-bit float to 4-bit int, which reduces the memory requirement from [13GB to 3.9GB](https://github.com/ggerganov/llama.cpp?tab=readme-ov-file#memorydisk-requirements) for a 7B parameter model. the relationship between quantization and memory is mostly linear. finbarr provides a [much better examination](https://finbarr.ca/how-is-llama-cpp-possible/) of this magical process.
 
@@ -41,21 +46,18 @@ tldr; llama.cpp makes local LLM possible on Mac and a variety of devices using i
 
 
 ## architecture
+<img src="app/static/rag_arch.png" alt="local GPT architecture" width="100%" height="100%"/>
 
-![rag architecture](/Users/winniex/code/wyx/posts/rag_arch.png)
-
-the main components of this RAG chatbot were:
+the main components of this RAG chatbot are:
 
 1. local LLM server (llama3), powered by Ollama
 2. chatbot frontend, powered by Streamlit
 3. data ingestion/storage/retrieval/synthesis, powered by LlamaIndex 
 4. local embedding generation, powered by BAAI/bge-large-en-v1.5
 
-i will highlight a couple of challenges that i encountered in this one-week sprint; those interested in the complete implementation, take a look at the code here. 
+the diagram above gives a pretty good summary of the architecture, so i will focus highlight a couple of challenges that i encountered during this sprint. for those interested in the implementations, see [github here](https://github.com/winnsterx/ragOS).
 
-one note is that i chose llamaindex as the primary framework for this project. 
-
-## what I did to get more relevant, accurate responses
+## what I did to improve retrieval and responses
 
 to achieve precise retrieval across all historical knowledge bases means that i will eventually have to rely on multiple indices. however, i made the mistake of prioritizing improving routing between multiple indices instead of improving accurate retrieval within a single document. these are two entirely different engineering problems. 
 
